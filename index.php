@@ -1,9 +1,49 @@
-<?php phpinfo(); ?>
-<?php phpinfo(); ?>
-<?php phpinfo(); ?>
-<?php phpinfo(); ?>
-<?php phpinfo(); ?>
-<?php phpinfo(); ?>
-<?php phpinfo(); ?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="css/foundation.css">
+    <style>
+     
+    </style>
+</head>
+<body style="min-height: 100vh; display: flex; flex-direction: column; background: #252525; margin: 0;">
 
-save sebas
+    <nav class="banner-wrapper">
+    <img class="top-banner" src="https://www.softwarengineering.it/assets/img/logo_softwarengineering_blubordobianco.png" alt="Logo">
+</nav>
+    
+
+    <div class="main-content">
+        <div class="grid-container" style="width: 100%;">
+
+            <div class="grid-x grid-padding-x align-center">
+                <div class="cell small-11 medium-8 large-5" style="background: white; color: black; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                    
+                    
+                    <form action="/auth" method="POST">
+                        <h2 class="text-center">Benvenuto</h2>
+                        
+                        <label for="username">Utente
+                            <input type="text" id="username" name="username" required>
+                        </label>
+
+                        <label for="password">Password
+                            <input type="password" id="password" name="password" required>
+                        </label>
+
+                        <button type="submit" class="button expanded" style="margin-top: 1rem;">Entrare</button>
+                        
+                        <p class="text-center-bottom" style="margin-top: 1rem;">
+                            <a href="#">¿Hai dimenticato la password?</a>
+                        </p>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
