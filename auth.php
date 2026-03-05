@@ -1,37 +1,47 @@
 <?php
 session_start();
 
-$host = 'localhost';
-$db   = 'erasmussa';
-$user = 'postgres';
-$pass = 'erasmussa';
+$host = "localhost";
+$db   = "users";
+$user = "perugia";
+$pass = "PERUGIAPSW";
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    die("Errore di connessione: " . $e->getMessage());
+$conn = pg_connect("host=$host dbname=$db user=$user password=$pass");
+if (!$conn) {
+    die("Errore di connessione al database.");
 }
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $username = trim($_POST['username']);
-    $password = $_POST['password'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
-    if (!empty($username) && !empty($password)) {
-        $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE username = :username");
-        $stmt->execute(['username' => $username]);
-        $user = $stmt->fetch();
+    $username = trim($_POST['username'] ?? '');
+    $password = $_POST['password'] ?? '';
 
-        if ($user && password_verify($password, $user['password'])) {
-            $_SESSION['user_id'] = $user['id'];
+    if ($username !== '' && $password !== '') {
+
+        $query = "SELECT id_user, username, password FROM users WHERE username = $1";
+        $result = pg_query_params($conn, $query, array($username));
+
+        if ($result && pg_num_rows($result) > 0) {
+            $user = pg_fetch_assoc($result);
+            $login_correcto = password_verify($password, $user['password']);
+        } else {
+            $login_correcto = false;
+        }
+
+        if ($login_correcto) {
+            session_regenerate_id(true);
+
+            $_SESSION['user_id']  = $user['id_user'];
             $_SESSION['username'] = $user['username'];
 
-            header("Ubicazione: dashboard.php");
+            header("Location: main.php");
             exit;
         } else {
             echo "Nome utente o password errati.";
         }
+
     } else {
         echo "Per favore, compila tutti i campi.";
     }
 }
+?>
