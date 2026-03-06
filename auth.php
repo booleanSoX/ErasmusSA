@@ -1,10 +1,10 @@
-<?php 
+<?php
 session_start();
 
 $host = "localhost";
-$db   = "users";        // Tu base de datos
-$user = "perugia";      // Usuario PostgreSQL
-$pass = "PERUGIAPSW";   // Contraseña PostgreSQL
+$db   = "users";
+$user = "perugia";
+$pass = "PERUGIAPSW";
 
 $conn = pg_connect("host=$host dbname=$db user=$user password=$pass");
 if (!$conn) {
@@ -30,13 +30,13 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
         if ($login_correcto) {
             session_regenerate_id(true);
+
             $_SESSION['user_id']  = $user['id_user'];
             $_SESSION['username'] = $user['username'];
+
             header("Location: main.php");
             exit;
         } else {
-            header("Location: main.php");
-
             echo "Nome utente o password errati.";
         }
 
@@ -45,5 +45,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 }
 ?>
+
+
+
 
 

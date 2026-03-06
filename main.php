@@ -1,9 +1,13 @@
 <?php
-session_start();
+
+
+
 if (!isset($_SESSION['user_id'])) {
     header("Location: index.html");
     exit;
 }
+
+session_start();
 
 $host = "localhost";
 $db   = "users";
@@ -22,14 +26,14 @@ $emails_result  = pg_query($conn, "SELECT email AS email_address, domain_name, s
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pannello utente - ERP</title>
+    <title>Dashboard - ERP</title>
     <link rel="stylesheet" href="css/foundation.css">
 </head>
 <body>
 
 <nav class="banner-wrapper">
     <img class="top-banner" src="https://www.softwarengineering.it/assets/img/logo_softwarengineering_blubordobianco.png" alt="Logo ERP">
-    <a href="logout.php" class="button alert" style="float:right; margin:10px;">Logout</a>
+    <a href="logout.php" class="button alert">Logout</a>
 </nav>
 
 <div class="dashboard-content">
@@ -43,6 +47,7 @@ $emails_result  = pg_query($conn, "SELECT email AS email_address, domain_name, s
             </div>
         </div>
 
+        <!-- Usuarios -->
         <div class="grid-x grid-padding-x align-center">
             <div class="cell small-12 medium-10 large-8 card-box">
                 <h3 class="text-center">Utenti</h3>
@@ -71,6 +76,7 @@ $emails_result  = pg_query($conn, "SELECT email AS email_address, domain_name, s
             </div>
         </div>
 
+        <!-- Dominios -->
         <div class="grid-x grid-padding-x align-center">
             <div class="cell small-12 medium-10 large-8 card-box">
                 <h3 class="text-center">Domini</h3>
@@ -88,7 +94,6 @@ $emails_result  = pg_query($conn, "SELECT email AS email_address, domain_name, s
                                 $state_label = 'success';
                                 if (strtolower($domain['domain_state']) === 'in attesa di rinnovo') $state_label = 'warning';
                                 elseif (strtolower($domain['domain_state']) === 'oziare') $state_label = 'alert';
-
                                 echo "<tr>
                                         <td>".htmlspecialchars($domain['domain_name'])."</td>
                                         <td><span class='{$state_label} label'>".htmlspecialchars($domain['domain_state'])."</span></td>
@@ -101,6 +106,7 @@ $emails_result  = pg_query($conn, "SELECT email AS email_address, domain_name, s
             </div>
         </div>
 
+        <!-- Emails -->
         <div class="grid-x grid-padding-x align-center">
             <div class="cell small-12 medium-10 large-8 card-box">
                 <h3 class="text-center">E-mail</h3>

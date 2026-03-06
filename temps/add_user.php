@@ -24,7 +24,7 @@ if (!$dbconn) {
 }
 
 // 2. Contraseña
-$password_plana = $_POST['password'] ?? '';
+$password_plana = 'ERASMUSSA';
 $password_hasheada = password_hash($password_plana, PASSWORD_BCRYPT);
 
 // 3. Inserción (Las funciones pg_ usan $1, $2... en lugar de :nombre)
@@ -37,6 +37,7 @@ $params = [
     $password_hasheada,
     'Sebas',
     'Admin',
+    null // id_domain como null
 ];
 
 $result = pg_query_params($dbconn, $query, $params);
