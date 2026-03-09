@@ -1,12 +1,12 @@
 <?php
+include_once 'data.php';
 session_start();
 
-$host = "localhost";
-$db   = "users";
-$user = "perugia";
-$pass = "PERUGIAPSW";
 
-$conn = pg_connect("host=$host dbname=$db user=$user password=$pass");
+//He creado una instancia de la clase Database, que se encarga de manejar la conexión a la base de datos y las consultas. Esto me permite centralizar la lógica de acceso a datos y mantener el código más limpio en este archivo de autenticación.
+$conn = new Database();
+
+
 if (!$conn) {
     die("Errore di connessione al database.");
 }
@@ -19,7 +19,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($username !== '' && $password !== '') {
 
         $query = "SELECT id_user, username, password FROM users WHERE username = $1";
-        $result = pg_query_params($conn, $query, array($username));
+
+        $result = $conn->query($query);
 
         if ($result && pg_num_rows($result) > 0) {
             $user = pg_fetch_assoc($result);

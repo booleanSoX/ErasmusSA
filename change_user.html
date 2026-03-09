@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modifica Dati Utente</title>
+    <link rel="stylesheet" href="css/foundation.css">
+</head>
+<body style="min-height: 100vh; display: flex; flex-direction: column; background: #f5f5f5; margin: 0;">
+
+<nav class="banner-wrapper">
+    <img class="top-banner" src="https://www.softwarengineering.it/assets/img/logo_softwarengineering_blubordobianco.png" alt="Logo">
+    <a href="profile.html" class="button alert" style="float: right; margin-top: 1rem;">Indietro</a>
+</nav>
+
+<div class="main-content">
+    <div class="grid-container">
+        <div class="grid-x grid-padding-x align-center">
+            <div class="cell small-12 medium-8 large-6">
+                <div class="card-box" style="padding: 2rem; background: white; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+
+                    <h2 class="text-center">Modifica Dati Utente</h2>
+                    <hr>
+
+                    <form action="change_user.php" method="POST">
+                        <div class="grid-x grid-padding-x">
+
+                            <div class="cell medium-6">
+                                <label>Nome
+                                    <input type="text" name="name" value="John" required>
+                                </label>
+                            </div>
+
+                            <div class="cell medium-6">
+                                <label>Cognome
+                                    <input type="text" name="last_name" value="Doe" required>
+                                </label>
+                            </div>
+
+                            <div class="cell medium-6">
+                                <label>Email
+                                    <input type="email" name="email" value="john.doe@example.com" required>
+                                </label>
+                            </div>
+
+                            <div class="cell medium-6">
+                                <label>Username
+                                    <input type="text" name="username" label="john_doe" required>
+                                </label>
+                            </div>
+
+                            <div class="cell medium-12">
+                                <button type="submit" class="button expanded success">Aggiorna Dati</button>
+                            </div>
+
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

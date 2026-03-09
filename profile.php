@@ -1,10 +1,9 @@
 <?php
-
 include_once 'data.php';
+include_once 'dataManagement.php';
 session_start();
 
 $timeout = 900; 
-
 if (isset($_SESSION['last_activity'])) {
     $inactive = time() - $_SESSION['last_activity'];
     if ($inactive > $timeout) {
@@ -14,7 +13,6 @@ if (isset($_SESSION['last_activity'])) {
         exit;
     }
 }
-
 $_SESSION['last_activity'] = time();
 
 if (!isset($_SESSION['user_id'])) {
@@ -23,13 +21,10 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $conn = new Database();
-$ddbbManager = new DataManager($conn->getConnection());
+$ddbbManager = new DatabaseManager($conn->getConnection());
 
-$users_result = $ddbbManager->getAllUsers();
-$domains_result = $ddbbManager->query("SELECT domain_name, domain_state FROM domains ORDER BY domain_name ASC");
-$emails_result = $ddbbManager->query("SELECT email AS email_address, domain_name, size FROM emails ORDER BY email ASC");
+$user_id = $_SESSION['user_id'];
+$user_data = $ddbbManager->querySingle("SELECT name, last_name, email, username FROM users WHERE id_user = $user_id");
 
-
-
-include 'main_view.php'; 
+include 'profile_view.php';
 ?>

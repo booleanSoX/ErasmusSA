@@ -1,12 +1,14 @@
 <?php
-session_start();
-$host = "localhost";
-$db   = "users";
-$user = "perugia";
-$pass = "PERUGIAPSW";
+include_once 'data.php';
 
-$connection_string = "host=$host dbname=$db user=$user password=$pass";
-$dbconn = pg_connect($connection_string);
+session_start();
+
+$conn = new Database();
+
+if (!$conn) {
+    die("Error de conexión al database.");
+}
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
 if (!$dbconn) {
     die("Error de conexión: " . pg_last_error());
@@ -17,8 +19,7 @@ $password_hasheada = password_hash($password_plana, PASSWORD_BCRYPT);
 
 $query = "INSERT INTO users (username, email, password, name, last_name, second_last_name) 
           VALUES ($1, $2, $3, $4, $5, $6)";
-
-
+          
 
 $params = [
     $_POST['username'] ?? '', 
@@ -30,7 +31,6 @@ $params = [
 
 ];
 
-
 $check_query = "SELECT 1 FROM users WHERE username = $1 OR email = $2";
 
 $check_result = pg_query_params($dbconn, $check_query, [
@@ -40,7 +40,6 @@ $check_result = pg_query_params($dbconn, $check_query, [
 
 if (pg_num_rows($check_result) > 0) {
 
-    //queda ponerlo en un mensaje de error en la página de registro
     echo "Error: El nombre de usuario o el correo electrónico ya están en uso.";
 exit;
 } else {
@@ -49,7 +48,6 @@ exit;
         header("Location: main.php");
         exit;
     } else {
-        //esto tambien debería ser un mensaje de error en la página de registro
         echo "Error en la consulta: " . pg_last_error($dbconn);
     }
 }}
