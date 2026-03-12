@@ -5,19 +5,10 @@ $db   = "users";
 $user = "perugia";
 $pass = "PERUGIAPSW";
 
-
-
-
-<?php
-// 1. Datos de conexión
-$host = 'localhost';
-$db   = 'users';
-$user = 'perugia';
-$pass = 'PERUGIAPSW';
-
 // La cadena de conexión para pg_connect es diferente a la de PDO
 $connection_string = "host=$host dbname=$db user=$user password=$pass";
 $dbconn = pg_connect($connection_string);
+
 
 if (!$dbconn) {
     die("Error de conexión: " . pg_last_error());

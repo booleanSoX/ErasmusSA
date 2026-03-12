@@ -1,56 +1,39 @@
 <?php
-include_once 'data.php';
+include_once 'Database.php';
+include_once 'DatabaseManager.php';
 
 session_start();
 
-$conn = new Database();
+$database = new Database();
+$databaseManager = new DatabaseManager($database); 
 
-if (!$conn) {
-    die("Error de conexión al database.");
-}
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $username = $_POST['username'] ?? '';
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+    $name = $_POST['name'] ?? '';
+    $last_name = $_POST['last_name'] ?? '';
+    $second_last_name = $_POST['second_last_name'] ?? '';
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-if (!$dbconn) {
-    die("Error de conexión: " . pg_last_error());
-}
-
-$password_plana = $_POST['password'] ?? '';
-$password_hasheada = password_hash($password_plana, PASSWORD_BCRYPT);
-
-$query = "INSERT INTO users (username, email, password, name, last_name, second_last_name) 
-          VALUES ($1, $2, $3, $4, $5, $6)";
-          
-
-$params = [
-    $_POST['username'] ?? '', 
-    $_POST['email'] ?? '',
-    $password_hasheada,
-    $_POST['name'] ?? '',
-    $_POST['last_name'] ?? '',
-    $_POST['second_last_name'] ?? '',
-
-];
-
-$check_query = "SELECT 1 FROM users WHERE username = $1 OR email = $2";
-
-$check_result = pg_query_params($dbconn, $check_query, [
-    $_POST['username'], 
-    $_POST['email']
-]);
-
-if (pg_num_rows($check_result) > 0) {
-
-    echo "Error: El nombre de usuario o el correo electrónico ya están en uso.";
-exit;
-} else {
-    $result = pg_query_params($dbconn, $query, $params);
-    if ($result) {
-        header("Location: main.php");
+    if ($databaseManager->checkUserExists($username, $email)) {
+        echo "Error: El nombre de usuario o el correo electrónico ya están en uso.";
         exit;
     } else {
-        echo "Error en la consulta: " . pg_last_error($dbconn);
+        $result = $databaseManager->createUser(
+            $username, 
+            $email, 
+            $password, 
+            $name, 
+            $last_name, 
+            $second_last_name
+        );
+        
+        if ($result) {
+            header("Location: main.php");
+            exit;
+        } else {
+            echo "Error en la consulta: " . pg_last_error($database->getConnection());
+        }
     }
-}}
-
-pg_close($dbconn);
+}
 ?>

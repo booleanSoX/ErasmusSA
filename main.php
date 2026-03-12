@@ -1,9 +1,20 @@
 <?php
+include_once 'Database.php';
+include_once 'DatabaseManager.php';
+include_once 'DatabaseViewer.php';
 
-include_once 'data.php';
 session_start();
 
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.html");
+    exit;
+}
 $timeout = 900; 
+
+
+$conn = new Database();
+$ddbbManager = new DatabaseManager($conn);
+$databaseViewer = new DatabaseViewer($ddbbManager);
 
 if (isset($_SESSION['last_activity'])) {
     $inactive = time() - $_SESSION['last_activity'];
@@ -17,19 +28,10 @@ if (isset($_SESSION['last_activity'])) {
 
 $_SESSION['last_activity'] = time();
 
-if (!isset($_SESSION['user_id'])) {
-    header("Location: index.html");
-    exit;
-}
-
-$conn = new Database();
-$ddbbManager = new DataManager($conn->getConnection());
-
-$users_result = $ddbbManager->getAllUsers();
-$domains_result = $ddbbManager->query("SELECT domain_name, domain_state FROM domains ORDER BY domain_name ASC");
-$emails_result = $ddbbManager->query("SELECT email AS email_address, domain_name, size FROM emails ORDER BY email ASC");
 
 
 
-include 'main_view.php'; 
+$domains_result = $ddbbManager->getUserDomains($_SESSION['user_id']);
+$emails_result = $ddbbManager->getUserEmailsPerDomain($_SESSION['user_id']);
+include 'main_view.php';
 ?>

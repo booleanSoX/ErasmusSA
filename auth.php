@@ -1,15 +1,10 @@
 <?php
-include_once 'data.php';
+include_once 'Database.php';
 session_start();
 
+$database = new Database();
+$ddbbManager = new DataManager($database->getConnection());
 
-//He creado una instancia de la clase Database, que se encarga de manejar la conexión a la base de datos y las consultas. Esto me permite centralizar la lógica de acceso a datos y mantener el código más limpio en este archivo de autenticación.
-$conn = new Database();
-
-
-if (!$conn) {
-    die("Errore di connessione al database.");
-}
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
 
