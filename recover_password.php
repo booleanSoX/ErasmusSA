@@ -9,24 +9,22 @@ $databaseManager = new DatabaseManager($database);
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $email = trim($_POST['email'] ?? '');
-    $user = trim($_POST['user'] ?? '');
-
     if ($email !== '') {
         $user_data = $databaseManager->getUserByEmail($email);
-
-        if ($user_data) {
-            $new_password = bin2hex(random_bytes(4)); 
-            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-
-            if ($databaseManager->updateUserPassword($user_data['id_user'], $hashed_password)) {
-                echo "La tua nuova password è: " . $new_password;
-            } else {
-                echo "Errore durante l'aggiornamento della password.";
-            }
+            if ($user_data && $user_data['username'] === trim($_POST['user'] ?? '')) {
+                $_SESSION['user_id'] = $user_data['id_user']; // Guardamos el ID
+                header("Location: change_password.php"); // Vamos al formulario
+                exit();
         } else {
-            echo "Nessun utente trovato con questo indirizzo email.";
+            echo "No se encontró ningún usuario con ese email y nombre de usuario.";
         }
-    } else {
+    } else {    
         echo "Per favore, inserisci un indirizzo email valido.";
     }
+} else {
+    echo "Per favore, invia una richiesta POST.";
 }
+
+
+
+?>  

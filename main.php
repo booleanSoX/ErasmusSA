@@ -9,12 +9,14 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: index.html");
     exit;
 }
+
+
 $timeout = 900; 
 
 
-$conn = new Database();
-$ddbbManager = new DatabaseManager($conn);
-$databaseViewer = new DatabaseViewer($ddbbManager);
+$database = new Database();
+$databaseManager = new DatabaseManager($database);
+$databaseViewer = new DatabaseViewer($databaseManager);
 
 if (isset($_SESSION['last_activity'])) {
     $inactive = time() - $_SESSION['last_activity'];
@@ -31,7 +33,7 @@ $_SESSION['last_activity'] = time();
 
 
 
-$domains_result = $ddbbManager->getUserDomains($_SESSION['user_id']);
-$emails_result = $ddbbManager->getUserEmailsPerDomain($_SESSION['user_id']);
+$domains_result = $databaseManager->getUserDomains($_SESSION['user_id']);
+$emails_result = $databaseManager->getUserEmailsPerDomain($_SESSION['user_id']);
 include 'main_view.php';
 ?>

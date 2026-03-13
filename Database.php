@@ -9,7 +9,7 @@ class Database {
     public function __construct() {
         $this->connection = pg_connect("host=$this->host dbname=$this->db user=$this->user password=$this->pass");
         if (!$this->connection) {
-            die("Error de conexión a la base de datos.");
+            throw new Exception("Error crítico: No se pudo establecer la conexión con la base de datos PostgreSQL.");
         }
     }
 

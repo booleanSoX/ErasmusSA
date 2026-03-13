@@ -1,9 +1,11 @@
 <?php
 include_once 'Database.php';
+include_once 'DatabaseManager.php';
+
 session_start();
 
 $database = new Database();
-$ddbbManager = new DataManager($database->getConnection());
+$ddbbManager = new DatabaseManager($database->getConnection());
 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {

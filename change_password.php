@@ -4,29 +4,39 @@ include_once 'DatabaseManager.php';
 
 session_start();
 
+if (!isset($_SESSION['user_id'])) {
+    header("Location: index.html");
+    exit();
+}
+
 $database = new Database();
 $databaseManager = new DatabaseManager($database); 
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    $email = trim($_POST['email'] ?? '');
-    $user = trim($_POST['user'] ?? '');
+    $password = trim($_POST['new_password'] ?? '');
+    $confirm_password = trim($_POST['confirm_new_password'] ?? ''); 
 
-    if ($email !== '' && ) {
-        $user_data = $databaseManager->getUserByEmail($email);
-
-        if ($user_data) {
-            $new_password = bin2hex(random_bytes(4)); 
-            $hashed_password = password_hash($new_password, PASSWORD_DEFAULT);
-
-            if ($databaseManager->updateUserPassword($user_data['id_user'], $hashed_password)) {
-                echo "La tua nuova password è: " . $new_password;
-            } else {
-                echo "Errore durante l'aggiornamento della password.";
-            }
-        } else {
-            echo "Nessun utente trovato con questo indirizzo email.";
-        }
-    } else {
-        echo "Per favore, inserisci un indirizzo email valido.";
+    if ($password === '' || $confirm_password === '') {
+        $_SESSION['error'] = "Por favor, completa todos los campos.";
+        header("Location: change_password_view.php");
+        exit();
     }
+
+    if ($password !== $confirm_password) {
+        $_SESSION['error'] = "Las contraseñas no coinciden.";
+        header("Location: change_password_view.php");
+        exit();
+    }
+
+    if ($databaseManager->updateUserPassword($_SESSION['user_id'], $password)) {
+        header("Location: index.html");
+        exit();
+    } else {
+        $_SESSION['error'] = "Hubo un problema al actualizar la base de datos.";
+        header("Location: change_password_view.php");
+        exit();
+    }
+} else {
+    header("Location: change_password_view.php");
+    exit();
 }

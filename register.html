@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrazione Utente | ErasmusSA</title>
     <link rel="stylesheet" href="css/foundation.css">
-</head>
+    <script src="js/script.js" defer></script></head>
 <body>
 
     <div class="banner-wrapper">
@@ -21,7 +21,10 @@
                         <h2 class="text-center">Crea un Account</h2>
                         <hr>
                         
-                        <form action="register.php" method="POST">
+                        <form id="registerForm" action="register.php" method="POST">
+                            
+                            <div id="error-message" ></div>
+
                             <div class="grid-x grid-padding-x">
                                 <div class="cell medium-12">
                                     <label>Nome
@@ -51,9 +54,14 @@
                                     </label>
                                 </div>
 
-                                <div class="cell medium-12">
+                                <div class="cell medium-6">
                                     <label>Password
-                                        <input type="password" name="password" placeholder="Almeno 8 caratteri" required>
+                                        <input type="password" id="password" name="password" placeholder="Almeno 8 caratteri" required>
+                                    </label>
+                                </div>
+                                <div class="cell medium-6">
+                                    <label>Conferma Password
+                                        <input type="password" id="confirm_password" name="confirm_password" placeholder="Ripeti la password" required>
                                     </label>
                                 </div>
 
