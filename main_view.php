@@ -131,7 +131,10 @@
                         <thead>
                             <tr>
                                 <th>Nombre del correo</th>
-                                <th>Tamaño</th>
+                                <th>ID Dominio</th>
+                                <th>Espacio Actual</th>
+                                <th>Límite de Cuota</th>
+                                <th>Último Inicio de Sesión</th>
                             </tr>
                         </thead>
                         <tbody>

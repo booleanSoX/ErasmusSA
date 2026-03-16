@@ -1,5 +1,4 @@
 <?php
-declare(strict_types=1);
 
 class DatabaseManager {
     private Database $Database;
@@ -22,18 +21,24 @@ class DatabaseManager {
 
     public function getUsers(): array {
         $result = pg_query($this->Database->getConnection(), "SELECT * FROM users");
-        $data = pg_fetch_all($result);
-        return $data ?: []; 
+        if ($result) {
+            $data = pg_fetch_all($result);
+            return $data ?: [];
+        }
+        return [];
     }
 
-    public function getUserByIdOrgetUsers(?int $id = null): array {
+    // Fixed method name for clarity
+    public function getUserByIdOrGetUsers(?int $id = null): array {
         if ($id === null) {
             return $this->getUsers();
         }
         $result = pg_query_params($this->Database->getConnection(), "SELECT * FROM users WHERE id_user = $1", [$id]);
-        $data = pg_fetch_assoc($result);
-        // Normalización estructural: Forzamos a que sea un array de listas aunque haya 1 solo resultado
-        return $data ? [$data] : [];
+        if ($result && pg_num_rows($result) > 0) {
+            $data = pg_fetch_assoc($result);
+            return $data ? [$data] : [];
+        }
+        return [];
     }
 
     public function getUserByUsername(string $username): ?array {
@@ -53,7 +58,8 @@ class DatabaseManager {
     }
 
     public function checkUserExists(string $email, string $username): bool {
-        return (bool)($this->getUserByUsername($username) || $this->getUserByEmail($email));
+        // Clearer logic: check if either method returns non-null
+        return $this->getUserByUsername($username) !== null || $this->getUserByEmail($email) !== null;
     }
 
     public function verifyUserAndPassword(string $login, string $password): bool {
@@ -67,8 +73,9 @@ class DatabaseManager {
     public function createUser(string $username, string $email, string $password, string $name, string $last_name, string $second_last_name = ''): bool {
         $query = "INSERT INTO users (username, email, password, name, last_name, second_last_name) 
                   VALUES ($1, $2, $3, $4, $5, $6)";
-        $password_hasheada = $this->hashPassword($password);
-        $params = [$username, $email, $password_hasheada, $name, $last_name, $second_last_name];
+        // Fixed variable name
+        $hashed_password = $this->hashPassword($password);
+        $params = [$username, $email, $hashed_password, $name, $last_name, $second_last_name];
         $result = pg_query_params($this->Database->getConnection(), $query, $params);
         return (bool)$result;
     }
@@ -78,18 +85,22 @@ class DatabaseManager {
                 FROM domains 
                 WHERE id_user = $1 
                 ORDER BY domain_name ASC";
-        $result = pg_query_params($this->Database->getConnection(), $sql, [$user_id]);
-        return pg_fetch_all($result) ?: [];
-    }
+       $result = pg_query_params($this->Database->getConnection(), $sql, [$user_id]);
+
+        if (!$result) {
+            return [];
+}
+
+return pg_fetch_all($result) ?: [];
 
     public function getUserEmailsPerDomain(int $user_id): array {
-        $sql = "SELECT e.email_address, e.current_size, e.id_domain, e.quota_limit AS size 
+        $sql = "SELECT e.email_address, e.current_size, d.domain_name, e.quota_limit, e.last_login
                 FROM emails e 
                 JOIN domains d ON e.id_domain = d.id_domain 
-                WHERE d.id_user = $1 
+                WHERE d.id_user = $1
                 ORDER BY e.email_address ASC";
         $result = pg_query_params($this->Database->getConnection(), $sql, [$user_id]);
-        return pg_fetch_all($result) ?: [];
+        return [];
     }
 
     public function getUserFiles(int $user_id): array {
@@ -98,7 +109,10 @@ class DatabaseManager {
                 WHERE id_user = $1 
                 ORDER BY file_name ASC";
         $result = pg_query_params($this->Database->getConnection(), $sql, [$user_id]);
-        return pg_fetch_all($result) ?: [];
+        if ($result) {
+            return pg_fetch_all($result) ?: [];
+        }
+        return [];
     }
 
     public function hashPassword(string $password): string {

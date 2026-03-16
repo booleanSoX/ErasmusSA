@@ -1,8 +1,0 @@
-- Tareas 
-
-
-- Hacer que el mensaje cuando el usuario introduce un usuario o contraseña inexistente se muestre
-    en la misma web sin necesidad de recargar una nueva pagina. 
-
-- 
-

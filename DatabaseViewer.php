@@ -10,32 +10,36 @@ class DatabaseViewer {
         $domains = $this->databaseManager->getUserDomains($userId);
         if ($domains) {
             foreach ($domains as $domain) {
-                $rawState = trim($domain['domain_state']);
-                $compareState = mb_strtolower($rawState);
-                $stateClass = 'status-secondary'; // Gris por defecto
-
                 $hoy = new DateTime();
+                $hoy->setTime(0, 0, 0); 
                 $expirationDateStr = $domain['expiration_date'] ?? null;
-                $diasRestantes = null;
-
+                
+                $stateText = 'Desconocido';
+                $stateClass = 'status-secondary'; 
                 if ($expirationDateStr) {
                     $fechaExp = new DateTime($expirationDateStr);
+                    $fechaExp->setTime(0, 0, 0);
+                    
                     $diff = $hoy->diff($fechaExp);
-                    $diasRestantes = (int)$diff->format("%r%a"); // %r mantiene el signo si es pasado
-                }
+                    $diasRestantes = (int)$diff->format("%r%a"); 
 
-                // Prioridad de Colores (incluyendo active/inactive en inglés y español)
-                if (in_array($compareState, ['suspendido', 'inactive', 'inactivo']) || ($diasRestantes !== null && $diasRestantes < 0)) {
-                    $stateClass = 'status-danger'; // Rojo
-                } elseif ($diasRestantes !== null && $diasRestantes <= 30) {
-                    $stateClass = 'status-warning'; // Amarillo (Quedan 30 días o menos)
-                } elseif (in_array($compareState, ['activo', 'active'])) {
-                    $stateClass = 'status-active'; // Verde
+                    if ($diasRestantes < 0) {
+                        $stateText = 'Suspendido';
+                        $stateClass = 'status-danger';  
+                    } elseif ($diasRestantes <= 30) {
+                        $stateText = 'Activo';
+                        $stateClass = 'status-warning';
+                    } else {
+                        $stateText = 'Activo';
+                        $stateClass = 'status-active';  
+                    }
+                } else {
+                    $stateText = trim($domain['domain_state'] ?? 'N/A');
                 }
 
                 echo "<tr>";
                 echo "<td>" . htmlspecialchars($domain['domain_name']) . "</td>";
-                echo "<td><span class='status-badge $stateClass'>" . htmlspecialchars($rawState) . "</span></td>";
+                echo "<td><span class='status-badge $stateClass'>" . htmlspecialchars($stateText) . "</span></td>";
                 echo "<td>" . htmlspecialchars($domain['registration_date'] ?? 'N/A') . "</td>";
                 echo "<td>" . htmlspecialchars($domain['expiration_date'] ?? 'N/A') . "</td>";
                 echo "</tr>";
@@ -51,7 +55,11 @@ class DatabaseViewer {
             foreach ($emails as $email) {
                 echo "<tr>";
                 echo "<td>" . htmlspecialchars($email['email_address']) . "</td>";
-                echo "<td>" . htmlspecialchars((string)($email['size'] ?? '0')) . " KB</td>";
+                echo "<td>" . htmlspecialchars((string)($email['id_domain'] ?? '0')) . "  </td>";
+                echo "<td>" . htmlspecialchars((string)($email['current_size'] ?? '0')) . " KB</td>";
+                echo "<td>" . htmlspecialchars((string)($email['quota_limit'] ?? '0')) . " KB</td>";
+                echo "<td>" . htmlspecialchars((string)($email['last_login'] ?? 'N/A')) . "</td>";
+
                 echo "</tr>";
             }
         } else {
@@ -60,13 +68,11 @@ class DatabaseViewer {
     }
 
     public function displayFiles($userId) {
-        // Archivos locales para Admin
         if ($userId === 1) {
             foreach (glob("uploads/*") as $file) {
                 if (is_file($file)) {
                     $fileInfo = pathinfo($file);
                     
-                    // Seguridad de tipos PHP 8+
                     $mime = @mime_content_type($file) ?: 'application/octet-stream';
                     $size = @filesize($file) ?: 0;
 
@@ -83,7 +89,6 @@ class DatabaseViewer {
             }
         }
         
-        // Archivos de BD
         $files = $this->databaseManager->getUserFiles($userId); 
         if ($files) {
             foreach ($files as $file) {
