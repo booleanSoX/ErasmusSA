@@ -1,6 +1,6 @@
 <?php
 
-class DatabaseManager {
+ class DatabaseManager {
     private Database $Database;
 
     public function __construct(Database $Database) {
@@ -88,10 +88,10 @@ class DatabaseManager {
        $result = pg_query_params($this->Database->getConnection(), $sql, [$user_id]);
 
         if (!$result) {
-            return [];
-}
-
-return pg_fetch_all($result) ?: [];
+        return [];
+        }
+        return pg_fetch_all($result) ?: [];
+    }
 
     public function getUserEmailsPerDomain(int $user_id): array {
         $sql = "SELECT e.email_address, e.current_size, d.domain_name, e.quota_limit, e.last_login
