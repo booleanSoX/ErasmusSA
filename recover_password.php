@@ -12,8 +12,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if ($email !== '') {
         $user_data = $databaseManager->getUserByEmail($email);
             if ($user_data && $user_data['username'] === trim($_POST['user'] ?? '')) {
-                $_SESSION['user_id'] = $user_data['id_user']; // Guardamos el ID
-                header("Location: change_password.php"); // Vamos al formulario
+                $_SESSION['user_id'] = $user_data['id_user']; 
+                header("Location: change_password.php"); 
                 exit();
         } else {
             echo "No se encontró ningún usuario con ese email y nombre de usuario.";

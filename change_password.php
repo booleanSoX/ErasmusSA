@@ -29,7 +29,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     }
 
     if ($databaseManager->updateUserPassword($_SESSION['user_id'], $password)) {
-        header("Location: index.html");
+        // AQUÍ ESTÁ EL CAMBIO: Enviamos la señal en la URL
+        header("Location: index.html?msg=password_changed");
         exit();
     } else {
         $_SESSION['error'] = "Hubo un problema al actualizar la base de datos.";

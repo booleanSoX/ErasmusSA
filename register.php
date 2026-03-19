@@ -28,7 +28,8 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
         $result = $databaseManager->createUser($username, $email, $password, $name, $last_name, $second_last_name);
         
         if ($result) {
-            echo json_encode(['status' => 'success', 'redirect' => 'index.html']);
+            // AQUÍ ESTÁ EL CAMBIO: Enviamos la señal en la URL
+            echo json_encode(['status' => 'success', 'redirect' => 'index.html?msg=account_created']);
             exit;
         } else {
             echo json_encode(['status' => 'error', 'message' => 'Error técnico al crear la cuenta.']);

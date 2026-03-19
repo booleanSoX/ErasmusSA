@@ -5,6 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="stylesheet" href="css/foundation.css">
+    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body style="min-height: 100vh; display: flex; flex-direction: column; background: #252525; margin: 0;">
 
@@ -46,6 +48,47 @@
 </div>
 
 <script>
+// --- MAGIA DE LA NOTIFICACIÓN EMERGENTE ---
+document.addEventListener('DOMContentLoaded', () => {
+    // Busca mensajes en la URL
+    const params = new URLSearchParams(window.location.search);
+    const msg = params.get('msg');
+
+    if (msg) {
+        let textoAlerta = '';
+        
+        if (msg === 'account_created') {
+            textoAlerta = 'Account creato con successo!';
+        } else if (msg === 'password_changed') {
+            textoAlerta = 'Password cambiata con successo!';
+        }
+
+        if (textoAlerta) {
+            const Toast = Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                showCloseButton: true,
+                timer: 6000,
+                timerProgressBar: true,
+                didOpen: (toast) => {
+                    toast.addEventListener('mouseenter', Swal.stopTimer)
+                    toast.addEventListener('mouseleave', Swal.resumeTimer)
+                }
+            });
+
+            Toast.fire({
+                icon: 'success',
+                title: textoAlerta
+            });
+
+            // Borra la señal de la URL para que no salga al recargar la página
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }
+});
+
+// --- TU LÓGICA DE LOGIN ORIGINAL INTACTA ---
 document.getElementById('loginForm').addEventListener('submit', function(e) {
     e.preventDefault(); 
     
