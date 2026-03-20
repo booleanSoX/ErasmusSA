@@ -1,0 +1,19 @@
+### SEGURIDAD Y CONFIGURACIÓN LOCAL ###
+# Nunca subir credenciales, tokens o configuración de base de datos
+.env
+.env.local
+.env.*.local
+
+### SERVIDOR Y ACCESO ###
+# Configuración específica del servidor Apache (reglas de redirección, etc.)
+.htaccess
+
+### DEPENDENCIAS DE TERCEROS ###
+# No se deben versionar las librerías descargadas por gestores de paquetes
+/vendor/
+node_modules/
+
+### ARCHIVOS TEMPORALES Y DE SISTEMA ###
+.DS_Store
+Thumbs.db
+*.log

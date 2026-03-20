@@ -10,12 +10,10 @@ class DatabaseViewer {
         $domains = $this->databaseManager->getUserDomains($userId);
         
         if (!$domains) {
-            // CAMBIO: colspan='5' porque ahora hay 5 columnas (incluyendo Editar)
             echo "<tr><td colspan='5' class='text-center'>No hay dominios registrados.</td></tr>";
             return;
         }
 
-        // Optimizacion: Creamos el objeto hoy fuera del bucle
         $hoy = new DateTime();
         $hoy->setTime(0, 0, 0);
 
@@ -49,7 +47,6 @@ class DatabaseViewer {
             echo "<td>" . htmlspecialchars($domain['registration_date'] ?? 'N/A') . "</td>";
             echo "<td>" . htmlspecialchars($expirationDateStr ?? 'N/A') . "</td>";
             
-            // CAMBIO: Añadida la celda de Editar
             echo "<td class='text-center'><i class='fa-solid fa-pen-to-square btn-edit' title='Editar Dominio'></i></td>";
             echo "</tr>";
         }
@@ -59,7 +56,6 @@ class DatabaseViewer {
         $emails = $this->databaseManager->getEmailsPerUser($userId);
         
         if (!$emails) {
-            // CAMBIO: colspan='6' porque ahora hay 6 columnas (incluyendo Editar)
             echo "<tr><td colspan='6' class='text-center'>No hay correos registrados.</td></tr>";
             return;
         }
@@ -72,7 +68,6 @@ class DatabaseViewer {
             echo "<td>" . htmlspecialchars((string)($email['quota_limit'] ?? '0')) . " KB</td>";
             echo "<td>" . htmlspecialchars((string)($email['last_login'] ?? 'N/A')) . "</td>";
             
-            // CAMBIO: Añadida la celda de Editar
             echo "<td class='text-center'><i class='fa-solid fa-pen-to-square btn-edit' title='Editar Correo'></i></td>";
             echo "</tr>";
         }
@@ -91,7 +86,7 @@ class DatabaseViewer {
                         'extension' => pathinfo($filePath, PATHINFO_EXTENSION),
                         'mime_type' => @mime_content_type($filePath) ?: 'application/octet-stream',
                         'file_size' => round(filesize($filePath) / 1024, 2),
-                        'download_url' => $filePath // Enlace directo (solo admin)
+                        'download_url' => $filePath 
                     ]);
                 }
             }
